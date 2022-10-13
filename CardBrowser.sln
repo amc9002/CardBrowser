@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32804.467
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardBrowser", "CardBrowser\CardBrowser.csproj", "{5D46970E-3BFB-44C4-BA7C-7468895BCF04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardBrowserApi", "CardBrowserApi\CardBrowserApi.csproj", "{BFCD3173-FAAC-45D2-AB89-57F051A2148A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5D46970E-3BFB-44C4-BA7C-7468895BCF04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D46970E-3BFB-44C4-BA7C-7468895BCF04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D46970E-3BFB-44C4-BA7C-7468895BCF04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D46970E-3BFB-44C4-BA7C-7468895BCF04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFCD3173-FAAC-45D2-AB89-57F051A2148A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFCD3173-FAAC-45D2-AB89-57F051A2148A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFCD3173-FAAC-45D2-AB89-57F051A2148A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFCD3173-FAAC-45D2-AB89-57F051A2148A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {68249C43-878D-4D2C-AE5C-F9C35C636E41}
+	EndGlobalSection
+EndGlobal
