@@ -13,6 +13,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
+using System.IO;
+using System.Net;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace CardBrowser
 {
@@ -26,18 +32,41 @@ namespace CardBrowser
             InitializeComponent();
         }
 
-        private void ButtonAddName_Click(object sender, RoutedEventArgs e)
+        public static ICollection<Card>? Get()
         {
-            if (!string.IsNullOrWhiteSpace(txtName.Text) && !lstNames.Items.Contains(txtName.Text))
+            HttpClient client = new()
             {
-                lstNames.Items.Add(txtName.Text);
-                txtName.Clear();
+                BaseAddress = new Uri("http://localhost:7191/")
+            };
+
+            HttpResponseMessage response = client.GetAsync("cards").Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                string? json = response.Content.ToString();
+                if (json != null)
+                {
+                    List<Card>? cards = JsonConvert.DeserializeObject<List<Card>>(json);
+                    return cards;
+                }
+                else
+                {
+                    MessageBox.Show("Card doesn't exist");
+                    return null;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+                return null;
             }
         }
+    }
 
-        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
+    public class Card
+    {
+        public string? Name { get; set; }
+        public string? FileName { get; set; }
+        public string? Img { get; set; }
     }
 }
