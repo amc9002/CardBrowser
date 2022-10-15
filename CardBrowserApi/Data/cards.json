@@ -1,50 +1,38 @@
 [
   {
-    "Name": "Card 1",
-    "BitImg": "BitImg 1"
+    "Name": "The Cutty Sark",
+    "FileName": "1024px-The_Cutty_Sark_2005-01-24.jpg"
   },
   {
-    "Name": "Card 2",
-    "BitImg": "BitImg 2"
+    "Name": "Dar Pomorza",
+    "FileName": "Dar-Pomorza.jpg"
   },
   {
-    "Name": "Card 3",
-    "BitImg": "BitImg 3"
+    "Name": "Discovery",
+    "FileName": "Discovery.jpg"
   },
   {
-    "Name": "Card 4",
-    "BitImg": "BitImg 4"
+    "Name": "Battleship Mikasa",
+    "FileName": "Japanese_battleship_Mikasa_in_Yokohama.jpg"
   },
   {
-    "Name": "Card 5",
-    "BitImg": "BitImg 5"
+    "Name": "The United States",
+    "FileName": "main-qimg-5052ea1fb9f097167cee4763009d5f06.jpg"
   },
   {
-    "Name": "Card 6",
-    "BitImg": "BitImg 6"
+    "Name": "Queen Elizabeth II",
+    "FileName": "nintchdbpict000177689785.jpg"
   },
   {
-    "Name": "Card 7",
-    "BitImg": "BitImg 7"
+    "Name": "Queen Mary",
+    "FileName": "Queen-Mary-Ship2-678x399.jpg"
   },
   {
-    "Name": "Card 8",
-    "BitImg": "BitImg 8"
+    "Name": "Britannia",
+    "FileName": "Royal-Yacht-Britannia-e1593443668468-1024x500.jpg"
   },
   {
-    "Name": "Card 9",
-    "BitImg": "BitImg 9"
-  },
-  {
-    "Name": "Card 10",
-    "BitImg": "BitImg 10"
-  },
-  {
-    "Name": "Card 11",
-    "BitImg": "BitImg 11"
-  },
-  {
-    "Name": "Card 12",
-    "BitImg": "BitImg 12"
+    "Name": "USS Constitution",
+    "FileName": "uss-constitution-167366cf2fa4cd30.jpg"
   }
 ]
