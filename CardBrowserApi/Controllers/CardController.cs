@@ -20,7 +20,7 @@ namespace CardBrowserApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
+        [HttpGet]
         public IEnumerable<Card>? Get()
         {
             using (StreamReader r = new("Data/cards.json"))
