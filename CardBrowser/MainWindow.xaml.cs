@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace CardBrowser
 {
@@ -23,6 +24,15 @@ namespace CardBrowser
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void ButtonAddName_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtName.Text) && !lstNames.Items.Contains(txtName.Text))
+            {
+                lstNames.Items.Add(txtName.Text);
+                txtName.Clear();
+            }
         }
     }
 }
