@@ -21,6 +21,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Data;
+using System.Diagnostics.Eventing.Reader;
 
 namespace CardBrowser
 {
@@ -37,7 +38,7 @@ namespace CardBrowser
 
 
 
-        public static ICollection<Card>? Get()
+        public static ICollection<Card> Get()
         {
             HttpClient client = new()
             {
@@ -46,45 +47,29 @@ namespace CardBrowser
 
             HttpResponseMessage response = client.GetAsync("Card").Result;
 
+            var cards = new List<Card>();
             if (response.IsSuccessStatusCode)
             {
-                string? json = response.Content.ToString();
-                if (json != null)
-                {
-                    List<Card>? cards = JsonConvert.DeserializeObject<List<Card>>(json);
-                    return cards;
-                }
-                else
+                string? json = response.Content.ReadAsStringAsync().ToString();
+                if (json == null)
                 {
                     MessageBox.Show("Card doesn't exist");
-                    return null;
+                    return cards;
                 }
+
+                List<Card>? _cards = JsonConvert.DeserializeObject<List<Card>>(json);
+                if (_cards != null) return _cards;
+                return cards;
+
             }
-            else
-            {
-                MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
-                return null;
-            }
+            MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+            return cards;
         }
 
-        public static void LoadCards()
+        public void LoadCards()
         {
-            DataTable? cards = (DataTable)Get();
-            if (cards != null)
-            {
-                for (int i = 0; i < cards.Rows.Count; i++)
-                {
-                    Card dataCard = new()
-                    {
-                        Img = cards.Rows[i][0].ToString(),
-                        Name = cards.Rows[i][1].ToString()
-                    };
-
-                    ListCards.Items.Add(dataCard);
-                }
-            }
-
-
+            List<Card> cards = (List<Card>)Get();
+            listCards.Items.Add(cards);
         }
         public class Card
         {
