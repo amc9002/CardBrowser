@@ -19,6 +19,8 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Data;
 
 namespace CardBrowser
 {
@@ -30,16 +32,19 @@ namespace CardBrowser
         public MainWindow()
         {
             InitializeComponent();
+            LoadCards();
         }
+
+
 
         public static ICollection<Card>? Get()
         {
             HttpClient client = new()
             {
-                BaseAddress = new Uri("http://localhost:7191/")
+                BaseAddress = new Uri("https://localhost:7191/")
             };
 
-            HttpResponseMessage response = client.GetAsync("cards").Result;
+            HttpResponseMessage response = client.GetAsync("Card").Result;
 
             if (response.IsSuccessStatusCode)
             {
@@ -61,12 +66,36 @@ namespace CardBrowser
                 return null;
             }
         }
+
+        public static void LoadCards()
+        {
+            DataTable? cards = (DataTable)Get();
+            if (cards != null)
+            {
+                for (int i = 0; i < cards.Rows.Count; i++)
+                {
+                    Card dataCard = new()
+                    {
+                        Img = cards.Rows[i][0].ToString(),
+                        Name = cards.Rows[i][1].ToString()
+                    };
+
+                    ListCards.Items.Add(dataCard);
+                }
+            }
+
+
+        }
+        public class Card
+        {
+            public string? Name { get; set; }
+            public string? FileName { get; set; }
+            public string? Img { get; set; }
+        }
+
     }
 
-    public class Card
-    {
-        public string? Name { get; set; }
-        public string? FileName { get; set; }
-        public string? Img { get; set; }
-    }
+
+
+
 }
