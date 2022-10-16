@@ -61,7 +61,23 @@ namespace CardBrowser
                     foreach (var card in cards)  
                     {
                         if (card.Img == null) continue;
-                        card.BitImg = Convert.FromBase64String(card.Img);
+                     
+                        byte[] bitImg = Convert.FromBase64String(card.Img);
+                        if (bitImg == null || bitImg.Length == 0) continue;
+                        
+                        var bitmapImage = new BitmapImage();
+                        using (var mem = new MemoryStream(bitImg))
+                        {
+                            mem.Position = 0;
+                            bitmapImage.BeginInit();
+                            bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmapImage.UriSource = null;
+                            bitmapImage.StreamSource = mem;
+                            bitmapImage.EndInit();
+                        }
+                        bitmapImage.Freeze();
+                        card.BitmapImage = bitmapImage;
                     }
                 return cards;
                 }
@@ -87,7 +103,10 @@ namespace CardBrowser
             public string? Name { get; set; }
             public string? FileName { get; set; }
             public string? Img { get; set; }
-            public byte[]? BitImg { get; set; }    
+            public byte[]? BitImg { get; set; }           
+            public BitmapImage? BitmapImage { get; set; }
+            
+
         }
 
     }

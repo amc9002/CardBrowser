@@ -29,7 +29,7 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel>
-                                    <Image Width="80" Source="{Binding BitImg}"/>
+                                    <Image Width="80" Source="{Binding BitmapImage}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
