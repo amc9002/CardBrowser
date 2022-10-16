@@ -36,8 +36,6 @@ namespace CardBrowser
             LoadCards();
         }
 
-
-
         public static ICollection<Card> Get()
         {
             HttpClient client = new()
@@ -47,35 +45,49 @@ namespace CardBrowser
 
             HttpResponseMessage response = client.GetAsync("Card").Result;
 
-            var cards = new List<Card>();
+            var emptyCards = new List<Card>();
             if (response.IsSuccessStatusCode)
             {
-                string? json = response.Content.ReadAsStringAsync().ToString();
+                string? json = response.Content.ReadAsStringAsync().Result;
                 if (json == null)
                 {
                     MessageBox.Show("Card doesn't exist");
-                    return cards;
+                    return emptyCards;
                 }
 
-                List<Card>? _cards = JsonConvert.DeserializeObject<List<Card>>(json);
-                if (_cards != null) return _cards;
+                List<Card>? cards = JsonConvert.DeserializeObject<List<Card>>(json);
+                if (cards != null) 
+                {
+                    foreach (var card in cards)  
+                    {
+                        if (card.Img == null) continue;
+                        card.BitImg = Convert.FromBase64String(card.Img);
+                    }
                 return cards;
+                }
+                
+                return emptyCards;
 
             }
             MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
-            return cards;
+            return emptyCards;
         }
 
         public void LoadCards()
         {
             List<Card> cards = (List<Card>)Get();
-            listCards.Items.Add(cards);
+            foreach (var card in cards)
+            {
+                listCards.Items.Add(card);
+            }
+
         }
         public class Card
         {
             public string? Name { get; set; }
             public string? FileName { get; set; }
             public string? Img { get; set; }
+            public byte[]? BitImg { get; set; }    
         }
 
     }

@@ -29,12 +29,12 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel>
-                                    <Image Width="80" Source="{Binding photo}"/>
+                                    <Image Width="80" Source="{Binding BitImg}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Name" Width="570" DisplayMemberBinding="{Binding name}"/>
+                    <GridViewColumn Header="Name" Width="570" DisplayMemberBinding="{Binding Name}"/>
                 </GridView>
             </ListView.View>
         </ListView>
