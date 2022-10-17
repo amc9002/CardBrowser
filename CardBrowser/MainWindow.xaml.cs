@@ -46,7 +46,7 @@ namespace CardBrowser
                 listCards.Items.Add(card);
         }
 
-         private void Click_Browse(object sender, RoutedEventArgs e)
+        private void Click_Browse(object sender, RoutedEventArgs e)
         {
             OpenFileDialog browseFiles = new()
             {
@@ -58,32 +58,56 @@ namespace CardBrowser
                 string fullPath = browseFiles.FileName;
                 fullPathBox.Text = fullPath;
                 path.Text = Path.GetFileName(fullPath);
-                byte[] fileBody = File.ReadAllBytes(fullPath);
+                byte[] bitImg = File.ReadAllBytes(fullPath);
 
-                if (fileBody == null || fileBody.Length == 0) return;
+                if (bitImg == null || bitImg.Length == 0) return;
 
-                bigImage.Source = CardBrowserApiClient.ByteArrayToImage(fileBody);
-                
-
+                bigImage.Source = CardBrowserApiClient.ByteArrayToImage(bitImg);
+                cardName.Text = "";
+                MessageBox.Show("Enter Name of card, please");
             }
         }
 
         private void Click_UploadFile(object sender, RoutedEventArgs e)
         {
-            if (path.Text != null && cardName.Text != "")
+            while (!cardName.Text.Any(c => char.IsLetter(c))
+                && !string.IsNullOrEmpty(cardName.Text))
             {
-                byte[] fileBody = File.ReadAllBytes(fullPathBox.Text);
-                string base64ImageRepresentation = Convert.ToBase64String(fileBody);
-                var newCard = new Card
+                MessageBox.Show("Enter Name of card, please");
+            }
+
+            if (path.Text == null) return;
+
+            byte[] fileBody = File.ReadAllBytes(fullPathBox.Text);
+            string base64ImageRepresentation = Convert.ToBase64String(fileBody);
+            var newCard = new Card
+            {
+                Name = cardName.Text,
+                FileName = Path.GetFileName(path.Text),
+                Img = base64ImageRepresentation
+            };
+            CardBrowserApiClient.Post(newCard);
+            LoadCards();
+
+        }
+
+        private void ListCards_Click(object sender, MouseButtonEventArgs e)
+        {
+            var item = (Card)((ListView)sender).SelectedItem;
+            if (item != null)
+            {
+                cardName.Text = item.Name;
+                if (item.Img == null)
                 {
-                    Name = cardName.Text,
-                    FileName = Path.GetFileName(path.Text),
-                    Img = base64ImageRepresentation
-                };
-                CardBrowserApiClient.Post(newCard);
-                LoadCards();
+                    MessageBox.Show("No picture");
+                    return;
+                }
+                if (item.Img != null)
+                {
+                    byte[] bitImg = Convert.FromBase64String(item.Img);
+                    bigImage.Source = CardBrowserApiClient.ByteArrayToImage(bitImg);
+                }
             }
         }
-    
     }
 }
