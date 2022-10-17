@@ -1,9 +1,9 @@
 using CardBrowserApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using static System.Net.Mime.MediaTypeNames;
 using System.Text;
 using System.IO;
+using System.Drawing;
 
 namespace CardBrowserApi.Controllers
 {
@@ -45,15 +45,14 @@ namespace CardBrowserApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(IFormFile file)
+        public IActionResult Post(Card newCard)
         {
-            if (file != null && file.Length > 0)
+            if (newCard != null)
             {
-                using (var ms = new MemoryStream())
+                if(newCard.Img != null)
                 {
-                    file.CopyTo(ms);
-                    var fileBytes = ms.ToArray();
-                    if (IsValidImage(fileBytes))
+                    var byteImg = Convert.FromBase64String(newCard.Img);
+                    if (IsValidImage(byteImg))
                     {
                         List<Card>? existingListOfCards;
                         string pathToFile = "Data/cards.json";
@@ -62,20 +61,19 @@ namespace CardBrowserApi.Controllers
                             string existingJson = r.ReadToEnd();
                             existingListOfCards = JsonConvert.DeserializeObject<List<Card>>(existingJson);
                         }
-                        int lastId = 0;
-                        if (existingListOfCards != null)
-                        {
-                            lastId = existingListOfCards[existingListOfCards.Count - 1].Id;
-                        }
-
-                        var srcTromClient = "data:" + file.ContentType + ";base64," + Convert.ToBase64String(fileBytes);
 
                         var card = new Card
                         {
-                            Id = lastId + 1,
-                            Name = "Something",
-                            Img = srcTromClient
+                            Name = newCard.Name,
+                            FileName = newCard.FileName,
+                            Img = newCard.Img
                         };
+                        using (var imageFile = new FileStream("Data/Img/" + newCard.FileName, FileMode.Create))
+                        {
+                            imageFile.Write(byteImg, 0, byteImg.Length);
+                            imageFile.Flush();
+                        }
+
                         existingListOfCards?.Add(card);
                         string updatedJson = JsonConvert.SerializeObject(card);
 

@@ -56,6 +56,7 @@ namespace CardBrowser
             if (browseFiles.ShowDialog() == true)
             {
                 string fullPath = browseFiles.FileName;
+                fullPathBox.Text = fullPath;
                 path.Text = Path.GetFileName(fullPath);
                 byte[] fileBody = File.ReadAllBytes(fullPath);
 
@@ -71,7 +72,7 @@ namespace CardBrowser
         {
             if (path.Text != null && cardName.Text != "")
             {
-                byte[] fileBody = File.ReadAllBytes(path.Text);
+                byte[] fileBody = File.ReadAllBytes(fullPathBox.Text);
                 string base64ImageRepresentation = Convert.ToBase64String(fileBody);
                 var newCard = new Card
                 {
@@ -80,6 +81,7 @@ namespace CardBrowser
                     Img = base64ImageRepresentation
                 };
                 CardBrowserApiClient.Post(newCard);
+                CardBrowserApiClient.Get();
             }
         }
     

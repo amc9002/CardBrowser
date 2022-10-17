@@ -62,10 +62,8 @@ namespace CardBrowser
             {
                 BaseAddress = new Uri("https://localhost:7191/")
             };
-            HttpResponseMessage response = client.GetAsync("Card").Result;
-            if (response == null) return false;
 
-            response = client.PostAsJsonAsync("api/person", newCard).Result;
+            HttpResponseMessage response = client.PostAsJsonAsync("Card", newCard).Result;
             if (response.IsSuccessStatusCode)
             {
                 MessageBox.Show("Succesfully posted");
