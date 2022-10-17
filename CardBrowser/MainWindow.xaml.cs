@@ -36,13 +36,21 @@ namespace CardBrowser
             LoadCards();
         }
 
+        public void LoadCards()
+        {
+            List<Card> cards = (List<Card>)Get();
+            foreach (var card in cards)
+            {
+                listCards.Items.Add(card);
+            }
+        }
+
         public static ICollection<Card> Get()
         {
             HttpClient client = new()
             {
                 BaseAddress = new Uri("https://localhost:7191/")
             };
-
             HttpResponseMessage response = client.GetAsync("Card").Result;
 
             var emptyCards = new List<Card>();
@@ -89,17 +97,31 @@ namespace CardBrowser
             return emptyCards;
         }
 
-        public void LoadCards()
+        public static bool Post(Card? newCard)
         {
-            List<Card> cards = (List<Card>)Get();
-            foreach (var card in cards)
+            if(newCard == null) return false;
+ 
+            HttpClient client = new()
             {
-                listCards.Items.Add(card);
-            }
+                BaseAddress = new Uri("https://localhost:7191/")
+            };
+            HttpResponseMessage response = client.GetAsync("Card").Result;
+            if (response == null) return false;
 
+            response = client.PostAsJsonAsync("api/person", newCard).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                MessageBox.Show("Succesfully posted");
+            }
+            else
+                MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+
+            return true;
         }
+
         public class Card
         {
+            public int Id { get; set; }
             public string? Name { get; set; }
             public string? FileName { get; set; }
             public string? Img { get; set; }
@@ -109,6 +131,10 @@ namespace CardBrowser
 
         }
 
+        private void addButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
 

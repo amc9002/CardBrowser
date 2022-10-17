@@ -5,8 +5,8 @@ namespace CardBrowserApi.Models
     public class Card
     {
 
-        //public int Id { get; private set; }
-        public string? Name { get; private set; }
+        public int Id { get; set; }
+        public string? Name { get; set; }
         public string? FileName { get; private set; }
         public string? Img { get; set; }
 
