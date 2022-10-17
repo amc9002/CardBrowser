@@ -44,6 +44,7 @@ namespace CardBrowser
             {
                 listCards.Items.Add(card);
             }
+
         }
 
         public static ICollection<Card> Get()
@@ -65,43 +66,37 @@ namespace CardBrowser
                 }
 
                 List<Card>? cards = JsonConvert.DeserializeObject<List<Card>>(json);
-                if (cards != null) 
+                if (cards != null)
                 {
-                    foreach (var card in cards)  
+                    foreach (var card in cards)
                     {
                         if (card.Img == null) continue;
-                     
+
                         byte[] bitImg = Convert.FromBase64String(card.Img);
                         if (bitImg == null || bitImg.Length == 0) continue;
-                        
-                        var bitmapImage = new BitmapImage();
-                        using (var mem = new MemoryStream(bitImg))
-                        {
-                            mem.Position = 0;
-                            bitmapImage.BeginInit();
-                            bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-                            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                            bitmapImage.UriSource = null;
-                            bitmapImage.StreamSource = mem;
-                            bitmapImage.EndInit();
-                        }
-                        bitmapImage.Freeze();
-                        card.BitmapImage = bitmapImage;
-                    }
-                return cards;
-                }
-                
-                return emptyCards;
 
+                        card.BitmapImage = ByteArrayToImage(bitImg);
+                    }
+                    return cards;
+                }
+                return emptyCards;
             }
             MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
             return emptyCards;
         }
 
-        public static bool Post(Card? newCard)
+        public bool Post(byte[] fileBody)
         {
-            if(newCard == null) return false;
- 
+            if (fileBody == null) return false;
+
+            Card newCard = new()
+            {
+                Name = cardName.Text,
+                BitImg = fileBody
+            };
+
+            if (newCard == null) return false;
+
             HttpClient client = new()
             {
                 BaseAddress = new Uri("https://localhost:7191/")
@@ -126,21 +121,56 @@ namespace CardBrowser
             public string? Name { get; set; }
             public string? FileName { get; set; }
             public string? Img { get; set; }
-            public byte[]? BitImg { get; set; }           
+            public byte[]? BitImg { get; set; }
             public BitmapImage? BitmapImage { get; set; }
-            
 
+        }
+
+        private void Click_AddCard(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog browseFiles = new()
+            {
+                Filter = "Image files (*.png;*.jpg)|*.png;*.jpg|All files (*.*)|*.*"
+            };
+
+            if (browseFiles.ShowDialog() == true)
+            {
+                path.Text = browseFiles.FileName;
+                using StreamReader r = new(path.Text);
+                byte[] fileBody = Encoding.ASCII.GetBytes(r.ReadToEnd());
+                if (fileBody == null || fileBody.Length == 0) return;
+
+                bigImage.Source = ByteArrayToImage(fileBody);                
+            }
         }
 
         private void Click_UploadFile(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog browseFiles = new OpenFileDialog();
-            browseFiles.Filter = "Image files (*.png;*.jpg)|*.png;*.jpg|All files (*.*)|*.*";
-            if(browseFiles.ShowDialog() == true)
+            if (path.Text != null && cardName.Text != null)
             {
-                //txtEditor.Text = File.ReadAllText(openFileDialog.FileName);
+                using StreamReader r = new(path.Text);
+                byte[] fileBody = Encoding.ASCII.GetBytes(r.ReadToEnd());
+                Post(fileBody);
             }
+
+        }
+
+        private static BitmapImage ByteArrayToImage(byte[] bitImg)
+        {
+            var bitmapImage = new BitmapImage();
+            using (var mem = new MemoryStream(bitImg))
+            {
+                mem.Position = 0;
+                bitmapImage.BeginInit();
+                bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.UriSource = null;
+                bitmapImage.StreamSource = mem;
+                bitmapImage.EndInit();
+            }
+            bitmapImage.Freeze();
+
+            return bitmapImage;
         }
     }
-
 }
