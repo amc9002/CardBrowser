@@ -15,8 +15,4 @@
     <ProjectReference Include="..\CardBrowserApi\CardBrowserApi.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

@@ -23,6 +23,8 @@ using System.Net.Http.Json;
 using System.Data;
 using System.Diagnostics.Eventing.Reader;
 using Microsoft.Win32;
+using CardBrowser.Models;
+using Path = System.IO.Path;
 
 namespace CardBrowser
 {
@@ -39,94 +41,12 @@ namespace CardBrowser
 
         public void LoadCards()
         {
-            List<Card> cards = (List<Card>)Get();
+            var cards = CardBrowserApiClient.Get();
             foreach (var card in cards)
-            {
                 listCards.Items.Add(card);
-            }
-
         }
 
-        public static ICollection<Card> Get()
-        {
-            HttpClient client = new()
-            {
-                BaseAddress = new Uri("https://localhost:7191/")
-            };
-            HttpResponseMessage response = client.GetAsync("Card").Result;
-
-            var emptyCards = new List<Card>();
-            if (response.IsSuccessStatusCode)
-            {
-                string? json = response.Content.ReadAsStringAsync().Result;
-                if (json == null)
-                {
-                    MessageBox.Show("Card doesn't exist");
-                    return emptyCards;
-                }
-
-                List<Card>? cards = JsonConvert.DeserializeObject<List<Card>>(json);
-                if (cards != null)
-                {
-                    foreach (var card in cards)
-                    {
-                        if (card.Img == null) continue;
-
-                        byte[] bitImg = Convert.FromBase64String(card.Img);
-                        if (bitImg == null || bitImg.Length == 0) continue;
-
-                        card.BitmapImage = ByteArrayToImage(bitImg);
-                    }
-                    return cards;
-                }
-                return emptyCards;
-            }
-            MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
-            return emptyCards;
-        }
-
-        public bool Post(byte[] fileBody)
-        {
-            if (fileBody == null) return false;
-
-            Card newCard = new()
-            {
-                Name = cardName.Text,
-                BitImg = fileBody
-            };
-
-            if (newCard == null) return false;
-
-            HttpClient client = new()
-            {
-                BaseAddress = new Uri("https://localhost:7191/")
-            };
-            HttpResponseMessage response = client.GetAsync("Card").Result;
-            if (response == null) return false;
-
-            response = client.PostAsJsonAsync("api/person", newCard).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                MessageBox.Show("Succesfully posted");
-            }
-            else
-                MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
-
-            return true;
-        }
-
-        public class Card
-        {
-            public int Id { get; set; }
-            public string? Name { get; set; }
-            public string? FileName { get; set; }
-            public string? Img { get; set; }
-            public byte[]? BitImg { get; set; }
-            public BitmapImage? BitmapImage { get; set; }
-
-        }
-
-        private void Click_AddCard(object sender, RoutedEventArgs e)
+         private void Click_AddCard(object sender, RoutedEventArgs e)
         {
             OpenFileDialog browseFiles = new()
             {
@@ -135,42 +55,33 @@ namespace CardBrowser
 
             if (browseFiles.ShowDialog() == true)
             {
-                path.Text = browseFiles.FileName;
-                using StreamReader r = new(path.Text);
-                byte[] fileBody = Encoding.ASCII.GetBytes(r.ReadToEnd());
+                string fullPath = browseFiles.FileName;
+                path.Text = Path.GetFileName(fullPath);
+                byte[] fileBody = File.ReadAllBytes(fullPath);
+
                 if (fileBody == null || fileBody.Length == 0) return;
 
-                bigImage.Source = ByteArrayToImage(fileBody);                
+                bigImage.Source = CardBrowserApiClient.ByteArrayToImage(fileBody);
+                
+
             }
         }
 
         private void Click_UploadFile(object sender, RoutedEventArgs e)
         {
-            if (path.Text != null && cardName.Text != null)
+            if (path.Text != null && cardName.Text != "")
             {
-                using StreamReader r = new(path.Text);
-                byte[] fileBody = Encoding.ASCII.GetBytes(r.ReadToEnd());
-                Post(fileBody);
+                byte[] fileBody = File.ReadAllBytes(path.Text);
+                string base64ImageRepresentation = Convert.ToBase64String(fileBody);
+                var newCard = new Card
+                {
+                    Name = cardName.Text,
+                    FileName = Path.GetFileName(path.Text),
+                    Img = base64ImageRepresentation
+                };
+                CardBrowserApiClient.Post(newCard);
             }
-
         }
-
-        private static BitmapImage ByteArrayToImage(byte[] bitImg)
-        {
-            var bitmapImage = new BitmapImage();
-            using (var mem = new MemoryStream(bitImg))
-            {
-                mem.Position = 0;
-                bitmapImage.BeginInit();
-                bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.UriSource = null;
-                bitmapImage.StreamSource = mem;
-                bitmapImage.EndInit();
-            }
-            bitmapImage.Freeze();
-
-            return bitmapImage;
-        }
+    
     }
 }
