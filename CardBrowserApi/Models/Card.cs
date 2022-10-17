@@ -8,7 +8,7 @@ namespace CardBrowserApi.Models
         //public int Id { get; private set; }
         public string? Name { get; private set; }
         public string? FileName { get; private set; }
-        public byte[]? Img { get; set; }
+        public string? Img { get; set; }
 
         public Card()
         {

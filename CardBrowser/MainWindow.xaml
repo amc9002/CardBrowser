@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CardBrowser"
         mc:Ignorable="d"
-        Title="Card Browser" Height="600" Width="1000">
+        Title="Card Browser" Height="600" Width="1300">
     <Grid Margin="10">
 
         <Grid.RowDefinitions>
@@ -18,34 +18,35 @@
 
         <Grid.ColumnDefinitions>
 
-            <ColumnDefinition Width="702" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="400" />
+            <ColumnDefinition Width="553*" />
+            <ColumnDefinition Width="327*"/>
         </Grid.ColumnDefinitions>
 
-        <ListView x:Name="listCards" Grid.RowSpan="4" Margin="10,10,10,16">
+        <ListView x:Name="listCards" Grid.RowSpan="4" Margin="10,10,10,16" TextElement.FontSize="16">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Picture" Width="100">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel>
-                                    <Image Width="80" Source="{Binding BitmapImage}"/>
+                                    <Image Width="120" Source="{Binding BitmapImage}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Name" Width="570" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="Name" Width="380"  DisplayMemberBinding="{Binding Name}" />
                 </GridView>
             </ListView.View>
         </ListView>
-
-        <TextBlock Grid.Row="4" Grid.Column="1" Margin="10,25,10,25"/>
-        <Button x:Name="editButton" Grid.Column="1" Content="Edit" HorizontalAlignment="Center" Margin="0,10,0,0" Grid.Row="1" VerticalAlignment="Top" Height="35" Width="130" FontSize="20"/>
-        <Button x:Name="deleteButton" Grid.Column="1" Content="Delete" HorizontalAlignment="Center" Margin="0,25,0,0" Grid.Row="2" VerticalAlignment="Top" Height="35" Width="130" FontSize="20"/>
-        <Button x:Name="addButton" Grid.Column="1" Content="Add" HorizontalAlignment="Center" Margin="0,186,0,0" Grid.Row="3" VerticalAlignment="Top" Height="35" Width="130" FontSize="20"/>
-        <Button x:Name="uploadButton" Grid.Column="1" Content="Upload" HorizontalAlignment="Center" Grid.Row="4" VerticalAlignment="Center" Height="35" Width="130" FontSize="20"/>
-        <TextBox x:Name="uploadField" HorizontalAlignment="Center" Height="35" Grid.Row="4" TextWrapping="Wrap" Text="Upload" VerticalAlignment="Center" Width="682"/>
-        <TextBox x:Name="editField" Grid.Column="1" HorizontalAlignment="Center" Height="32" TextWrapping="Wrap" Text="Edit" VerticalAlignment="Top" Width="242" Margin="0,40,0,0"/>
+        <Button x:Name="editButton" Grid.Column="2" Content="Edit" HorizontalAlignment="Center" Margin="0,10,0,0" Grid.Row="1" VerticalAlignment="Top" Height="35" Width="130" FontSize="20"/>
+        <Button x:Name="deleteButton" Grid.Column="2" Content="Delete" HorizontalAlignment="Center" Margin="0,25,0,0" Grid.Row="2" VerticalAlignment="Top" Height="35" Width="130" FontSize="20"/>
+        <Button x:Name="addButton" Grid.Column="2" Content="Add" HorizontalAlignment="Center" Margin="0,186,0,0" Grid.Row="3" VerticalAlignment="Top" Height="35" Width="130" FontSize="20"/>
+        <Button x:Name="uploadButton" Grid.Column="2" Content="Upload" HorizontalAlignment="Center" Grid.Row="4" VerticalAlignment="Center" Height="35" Width="130" FontSize="20" Margin="0,0,0,0"/>
+        <TextBox x:Name="uploadField" HorizontalAlignment="Left" Height="35" Grid.Row="4" TextWrapping="Wrap" Text="Upload" VerticalAlignment="Center" Width="682" FontSize="20" Grid.ColumnSpan="2" Margin="219,0,0,0"/>
+        <TextBox x:Name="editField" Grid.Column="2" HorizontalAlignment="Center" Height="32" TextWrapping="Wrap" Text="Edit" VerticalAlignment="Top" Width="242" Margin="0,40,0,0"/>
+        <TextBox x:Name="textBox" Grid.Column="1" HorizontalAlignment="Center" Margin="0,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="449" Height="47" FontSize="20"/>
+        <Image x:Name="image" Grid.Column="1" HorizontalAlignment="Left" Height="337" Margin="52,10,0,0" Grid.RowSpan="3" Grid.Row="1" VerticalAlignment="Top" Width="446"/>
     </Grid>
 
 </Window>

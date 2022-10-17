@@ -35,9 +35,9 @@ namespace CardBrowserApi.Controllers
                         string? fileName = "Data/Img/" + card.FileName;
                         if (fileName != null)
                         {
-                            using StreamReader reader = new(fileName);
-                            byte[] byteImg = Encoding.ASCII.GetBytes(reader.ReadToEnd());
-                            card.Img = byteImg;
+                            byte[] imageArray = System.IO.File.ReadAllBytes(fileName);
+                            string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+                            card.Img = base64ImageRepresentation;
                         }
                         else _logger.LogError("File doesn't exist");
                     }
