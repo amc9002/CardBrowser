@@ -11,6 +11,9 @@ namespace CardBrowserApi.Controllers
     [Route("[controller]")]
     public class CardController : ControllerBase
     {
+
+        private static string path = "Data/cards.json";
+
         private readonly ILogger<CardController> _logger;
 
         public CardController(ILogger<CardController> logger)
@@ -21,11 +24,9 @@ namespace CardBrowserApi.Controllers
         [HttpGet]
         public IEnumerable<Card>? Get()
         {
-            using StreamReader r = new("Data/cards.json");
-            string json = r.ReadToEnd();
-
-            List<Card>? cards = JsonConvert.DeserializeObject<List<Card>>(json);
-            if (cards != null)
+            List<Card>? cards = LoadCards();
+            if (cards == null) cards = new List<Card>();
+            else
             {
                 foreach (var card in cards)
                 {
@@ -39,8 +40,6 @@ namespace CardBrowserApi.Controllers
                     else _logger.LogError("File doesn't exist");
                 }
             }
-            else _logger.LogError("No cards file");
-
             return cards;
         }
 
@@ -49,24 +48,16 @@ namespace CardBrowserApi.Controllers
         {
             if (newCard != null)
             {
-                if(newCard.Img != null)
+                if (newCard.Img != null)
                 {
                     var byteImg = Convert.FromBase64String(newCard.Img);
                     if (IsValidImage(byteImg))
                     {
-                        List<Card>? existingListOfCards;
-                        string pathToFile = "Data/cards.json";
-                        using (StreamReader r = new(pathToFile))
-                        {
-                            string existingJson = r.ReadToEnd();
-                            existingListOfCards = JsonConvert.DeserializeObject<List<Card>>(existingJson);
-                        }
-
+                        List<Card>? existingListOfCards = LoadCards();
                         var card = new Card
                         {
                             Name = newCard.Name,
                             FileName = newCard.FileName,
-                            Img = newCard.Img
                         };
                         using (var imageFile = new FileStream("Data/Img/" + newCard.FileName, FileMode.Create))
                         {
@@ -75,23 +66,28 @@ namespace CardBrowserApi.Controllers
                         }
 
                         existingListOfCards?.Add(card);
-                        string updatedJson = JsonConvert.SerializeObject(card);
+                        string updatedJson = JsonConvert.SerializeObject(existingListOfCards);
 
-                        using (StreamWriter writer = new(pathToFile, false))
+                        using (StreamWriter writer = new(path, false))
                         {
                             writer.Write(updatedJson);
                         }
 
                         return Ok(card);
-
                     }
-                    else
-                    {
-                        return BadRequest("Not valid type of file");
-                    }
+                    else return BadRequest("Not valid type of file");
                 }
             }
             return BadRequest("File is empty or doesn't exist");
+        }
+
+        private static List<Card>? LoadCards()
+        {
+            using StreamReader r = new(path);
+            string json = r.ReadToEnd();
+
+            List<Card>? cards = JsonConvert.DeserializeObject<List<Card>>(json);
+            return cards;
         }
 
         private static bool IsValidImage(byte[] filebytes)
@@ -108,5 +104,7 @@ namespace CardBrowserApi.Controllers
 
             return true;
         }
+
+
     }
 }

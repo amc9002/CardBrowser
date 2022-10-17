@@ -47,7 +47,7 @@
         <TextBox x:Name="path" Grid.Column="2" HorizontalAlignment="Left" Margin="202,24,0,0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="438" Height="25" FontSize="12"/>
         <Button x:Name="uploadButton" Click="Click_UploadFile" Grid.Column="3" Content="Upload" HorizontalAlignment="Center" Grid.Row="5" Height="35" Width="130" VerticalAlignment="Top" Margin="0,31,0,0" FontSize="20"/>
         <Label x:Name="label" Grid.Column="2" Content="File Name" HorizontalAlignment="Left" Margin="106,25,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-        <TextBox x:Name="fullPathBox" Grid.Column="2" HorizontalAlignment="Left" Margin="202,66,0,0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="438" Height="25" FontSize="16"/>
+        <TextBox x:Name="fullPathBox" Grid.Column="2" HorizontalAlignment="Left" Margin="202,66,0,0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="438" Height="25" FontSize="12"/>
         <Label x:Name="label1" Grid.Column="2" Content="Full Path" HorizontalAlignment="Left" Margin="106,66,0,0" Grid.Row="5" VerticalAlignment="Top"/>
         <Label x:Name="label2" Grid.Column="2" Content="Name" HorizontalAlignment="Left" Margin="65,18,0,0" VerticalAlignment="Top" Height="42" Width="75" FontSize="20"/>
     </Grid>

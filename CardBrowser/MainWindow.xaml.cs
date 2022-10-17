@@ -81,7 +81,7 @@ namespace CardBrowser
                     Img = base64ImageRepresentation
                 };
                 CardBrowserApiClient.Post(newCard);
-                CardBrowserApiClient.Get();
+                LoadCards();
             }
         }
     
