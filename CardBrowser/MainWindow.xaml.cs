@@ -46,7 +46,7 @@ namespace CardBrowser
                 listCards.Items.Add(card);
         }
 
-         private void Click_AddCard(object sender, RoutedEventArgs e)
+         private void Click_Browse(object sender, RoutedEventArgs e)
         {
             OpenFileDialog browseFiles = new()
             {

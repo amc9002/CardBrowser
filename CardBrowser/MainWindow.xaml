@@ -21,8 +21,9 @@
 
             <ColumnDefinition Width="45.484" />
             <ColumnDefinition Width="354.516"/>
-            <ColumnDefinition Width="171*" />
-            <ColumnDefinition Width="49*"/>
+            <ColumnDefinition Width="503*" />
+            <ColumnDefinition Width="181*"/>
+            <ColumnDefinition Width="196*"/>
         </Grid.ColumnDefinitions>
 
         <ListView x:Name="listCards" Grid.RowSpan="6" Margin="10,10,10,42" TextElement.FontSize="16" Grid.ColumnSpan="2">
@@ -39,17 +40,22 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button x:Name="editButton" Grid.Column="3" Content="Edit" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Height="35" Width="130" FontSize="20"/>
-        <Button x:Name="deleteButton" Grid.Column="3" Content="Delete" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center" Height="35" Width="130" FontSize="20"/>
-        <Button x:Name="addButton" Click="Click_AddCard" Grid.Column="3" Content="Add" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Height="35" Width="130" FontSize="20"/>
-        <TextBox x:Name="cardName" Grid.Column="2" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="382" Height="47" FontSize="20" Margin="172,15,0,0"/>
-        <Image x:Name="bigImage" Grid.Column="2" HorizontalAlignment="Left" Height="420" Margin="52,81,0,0" Grid.RowSpan="5" VerticalAlignment="Top" Width="550"/>
-        <TextBox x:Name="path" Grid.Column="2" HorizontalAlignment="Left" Margin="202,24,0,0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="438" Height="25" FontSize="12"/>
-        <Button x:Name="uploadButton" Click="Click_UploadFile" Grid.Column="3" Content="Upload" HorizontalAlignment="Center" Grid.Row="5" Height="35" Width="130" VerticalAlignment="Top" Margin="0,31,0,0" FontSize="20"/>
-        <Label x:Name="label" Grid.Column="2" Content="File Name" HorizontalAlignment="Left" Margin="106,25,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-        <TextBox x:Name="fullPathBox" Grid.Column="2" HorizontalAlignment="Left" Margin="202,66,0,0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="438" Height="25" FontSize="12"/>
-        <Label x:Name="label1" Grid.Column="2" Content="Full Path" HorizontalAlignment="Left" Margin="106,66,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-        <Label x:Name="label2" Grid.Column="2" Content="Name" HorizontalAlignment="Left" Margin="65,18,0,0" VerticalAlignment="Top" Height="42" Width="75" FontSize="20"/>
+
+
+        <Label x:Name="filenameLabel" Grid.Column="2" Content="File Name" HorizontalAlignment="Left" Margin="23,25,0,0" Grid.Row="5" VerticalAlignment="Top" Height="25" Width="59"/>
+        <Label x:Name="pathLabel" Grid.Column="2" Content="Full Path" HorizontalAlignment="Left" Margin="27,67,0,0" Grid.Row="5" VerticalAlignment="Top" Height="25" Width="51"/>
+        <Label x:Name="nameLabel" Grid.Column="2" Content="Name" HorizontalAlignment="Left" Margin="76,18,0,0" VerticalAlignment="Top" Height="42" Width="75" FontSize="20"/>
+        <TextBox x:Name="cardName" Grid.Column="2" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="382" Height="47" FontSize="20" Margin="172,15,0,0" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="path" Grid.Column="2" HorizontalAlignment="Left" Margin="83,25,0,0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="395" Height="25" FontSize="12"/>
+        <TextBox x:Name="fullPathBox" Grid.Column="2" HorizontalAlignment="Left" Margin="83,67,0,0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="395" Height="25" FontSize="12"/>
+        <Button x:Name="editButton" Grid.Column="4" Content="Edit" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Height="35" Width="130" FontSize="20"/>
+        <Button x:Name="deleteButton" Grid.Column="4" Content="Delete" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center" Height="35" Width="130" FontSize="20"/>
+        <Button x:Name="browseButton" Click="Click_Browse" Grid.Column="3" Content="Browse" HorizontalAlignment="Center" Grid.Row="5" VerticalAlignment="Top" Height="35" Width="130" FontSize="20" Margin="0,25,0,0"/>
+        <Button x:Name="uploadButton" Click="Click_UploadFile" Grid.Column="4" Content="Upload" HorizontalAlignment="Center" Grid.Row="5" Height="35" Width="130" VerticalAlignment="Top" Margin="0,25,0,0" FontSize="20"/>
+        <Image x:Name="bigImage" Grid.Column="2" HorizontalAlignment="Left" Height="420" Margin="52,81,0,0" Grid.RowSpan="5" VerticalAlignment="Top" Width="614" Grid.ColumnSpan="2"/>
+        
+        
+        
     </Grid>
 
 </Window>
