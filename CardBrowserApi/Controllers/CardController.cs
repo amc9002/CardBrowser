@@ -61,7 +61,6 @@ namespace CardBrowserApi.Controllers
                         string pathToFile = "Data/cards.json";
                         using (StreamReader r = new(pathToFile))
                         {
-
                             string existingJson = r.ReadToEnd();
                             existingListOfCards = JsonConvert.DeserializeObject<List<Card>>(existingJson);
                         }
@@ -82,7 +81,7 @@ namespace CardBrowserApi.Controllers
                         existingListOfCards?.Add(card);
                         string updatedJson = JsonConvert.SerializeObject(card);
 
-                        using (StreamWriter writer = new StreamWriter(pathToFile, false))
+                        using (StreamWriter writer = new(pathToFile, false))
                         {
                             writer.Write(updatedJson);
                         }
@@ -99,7 +98,7 @@ namespace CardBrowserApi.Controllers
             return BadRequest("File is empty or doesn't exist");
         }
 
-        private bool IsValidImage(byte[] filebytes)
+        private static bool IsValidImage(byte[] filebytes)
         {
             using (var streamForValidation = new MemoryStream(filebytes))
                 try

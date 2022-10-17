@@ -22,6 +22,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Data;
 using System.Diagnostics.Eventing.Reader;
+using Microsoft.Win32;
 
 namespace CardBrowser
 {
@@ -131,13 +132,15 @@ namespace CardBrowser
 
         }
 
-        private void addButton_Click(object sender, RoutedEventArgs e)
+        private void Click_UploadFile(object sender, RoutedEventArgs e)
         {
-
+            OpenFileDialog browseFiles = new OpenFileDialog();
+            browseFiles.Filter = "Image files (*.png;*.jpg)|*.png;*.jpg|All files (*.*)|*.*";
+            if(browseFiles.ShowDialog() == true)
+            {
+                //txtEditor.Text = File.ReadAllText(openFileDialog.FileName);
+            }
         }
     }
-
-
-
 
 }
