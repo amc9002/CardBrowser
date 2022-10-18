@@ -129,6 +129,10 @@ namespace CardBrowser
         {
             CardBrowserApiClient.Delete(path.Text);
             LoadCards();
+            cardName.Text = string.Empty;
+            path.Text = string.Empty;
+            fullPathBox.Text = string.Empty;
+            bigImage.Source = null;
         }
     }
 }

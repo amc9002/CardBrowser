@@ -8,12 +8,12 @@ using System.Drawing;
 namespace CardBrowserApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class CardController : ControllerBase
     {
 
-        private static string path = "Data/cards.json";
-
+        private static readonly string pathToJsonFile = "Data/cards.json";
+        private static readonly string pathToImg = "Data/Img/";
         private readonly ILogger<CardController> _logger;
 
         public CardController(ILogger<CardController> logger)
@@ -30,7 +30,7 @@ namespace CardBrowserApi.Controllers
             {
                 foreach (var card in cards)
                 {
-                    string? fileName = "Data/Img/" + card.FileName;
+                    string? fileName = pathToImg + card.FileName;
                     if (fileName != null)
                     {
                         byte[] imageArray = System.IO.File.ReadAllBytes(fileName);
@@ -58,7 +58,7 @@ namespace CardBrowserApi.Controllers
                 Name = newCard.Name,
                 FileName = newCard.FileName,
             };
-            using (var imageFile = new FileStream("Data/Img/" + newCard.FileName, FileMode.Create))
+            using (var imageFile = new FileStream(pathToImg + newCard.FileName, FileMode.Create))
             {
                 imageFile.Write(byteImg, 0, byteImg.Length);
                 imageFile.Flush();
@@ -81,17 +81,16 @@ namespace CardBrowserApi.Controllers
             foreach(var c in existingListOfCards)           
                 if(card.FileName == c.FileName)
                 {
-                    card.Name = card.Name;
+                    c.Name = card.Name;
                     break;
                 }
            
-            if (existingListOfCards != null) SaveToFile(existingListOfCards);
+            SaveToFile(existingListOfCards);
 
             return Ok("Successfully updated");
         }
 
-        //[HttpDelete("{fileName:string}")]
-        [HttpDelete]
+        [HttpDelete("{fileName}")]
         public IActionResult Delete(string fileName)
         {
             var existingListOfCards = LoadCards();
@@ -104,14 +103,14 @@ namespace CardBrowserApi.Controllers
                     break;
                 }
 
-            if (existingListOfCards != null) SaveToFile(existingListOfCards);
+            SaveToFile(existingListOfCards);
 
             return Ok("Successfully deleted");
         }
 
         private static List<Card>? LoadCards()
         {
-            using StreamReader r = new(path);
+            using StreamReader r = new(pathToJsonFile);
             string json = r.ReadToEnd();
 
             List<Card>? cards = JsonConvert.DeserializeObject<List<Card>>(json);
@@ -122,7 +121,7 @@ namespace CardBrowserApi.Controllers
         {
             
             string json = JsonConvert.SerializeObject(cards);
-            using (StreamWriter writer = new(path, false))
+            using (StreamWriter writer = new(pathToJsonFile, false))
             {
                 writer.Write(string.Empty);
                 writer.Write(json);

@@ -16,13 +16,15 @@ namespace CardBrowser
 {
     public class CardBrowserApiClient
     {
+        private readonly static Uri baseAddress = new ("https://localhost:7191/");
+        private static readonly string pathToApi = "api/Card";
         public static List<Card> Get()
         {
             HttpClient client = new()
             {
-                BaseAddress = new Uri("https://localhost:7191/")
+                BaseAddress = baseAddress
             };
-            HttpResponseMessage response = client.GetAsync("Card").Result;
+            HttpResponseMessage response = client.GetAsync(pathToApi).Result;
 
             var emptyCards = new List<Card>();
             if (response.IsSuccessStatusCode)
@@ -60,10 +62,10 @@ namespace CardBrowser
 
             HttpClient client = new()
             {
-                BaseAddress = new Uri("https://localhost:7191/")
+                BaseAddress = baseAddress
             };
 
-            HttpResponseMessage response = client.PostAsJsonAsync("Card", newCard).Result;
+            HttpResponseMessage response = client.PostAsJsonAsync(pathToApi, newCard).Result;
             if (response.IsSuccessStatusCode)
             {
                 MessageBox.Show("Succesfully posted");
@@ -80,9 +82,9 @@ namespace CardBrowser
 
             HttpClient client = new()
             {
-                BaseAddress = new Uri("https://localhost:7191/")
+                BaseAddress = baseAddress
             };
-            HttpResponseMessage response = client.PutAsJsonAsync("Card", updatedCard).Result;
+            HttpResponseMessage response = client.PutAsJsonAsync(pathToApi, updatedCard).Result;
             if (response.IsSuccessStatusCode)
             {
                 MessageBox.Show("Succesfully updated");
@@ -99,9 +101,9 @@ namespace CardBrowser
 
             HttpClient client = new()
             {
-                BaseAddress = new Uri("https://localhost:7191/")
+                BaseAddress = baseAddress
             };
-            HttpResponseMessage response = client.DeleteAsync(filename).Result;
+            HttpResponseMessage response = client.DeleteAsync(pathToApi  + "/" + filename).Result;
 
             return true;
         }
