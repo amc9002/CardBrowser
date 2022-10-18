@@ -93,6 +93,19 @@ namespace CardBrowser
             return true;
         }
 
+        public static bool Delete(string filename)
+        {
+            if (filename == null) return false;
+
+            HttpClient client = new()
+            {
+                BaseAddress = new Uri("https://localhost:7191/")
+            };
+            HttpResponseMessage response = client.DeleteAsync(filename).Result;
+
+            return true;
+        }
+
         public static BitmapImage ByteArrayToImage(byte[] bitImg)
         {
             var bitmapImage = new BitmapImage();

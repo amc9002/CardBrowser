@@ -71,23 +71,42 @@ namespace CardBrowserApi.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put(Card editedCard)
+        public IActionResult Put(Card card)
         {
-            if (editedCard == null) return BadRequest("File is empty or doesn't exist");
+            if (card == null) return BadRequest("File is empty or doesn't exist");
 
             List<Card>? existingListOfCards = LoadCards();
             if(existingListOfCards == null) return NotFound("No cards in the store");
 
-            foreach(var card in existingListOfCards)           
-                if(card.FileName == editedCard.FileName)
+            foreach(var c in existingListOfCards)           
+                if(card.FileName == c.FileName)
                 {
-                    card.Name = editedCard.Name;
+                    card.Name = card.Name;
                     break;
                 }
            
             if (existingListOfCards != null) SaveToFile(existingListOfCards);
 
             return Ok("Successfully updated");
+        }
+
+        //[HttpDelete("{fileName:string}")]
+        [HttpDelete]
+        public IActionResult Delete(string fileName)
+        {
+            var existingListOfCards = LoadCards();
+            if (existingListOfCards == null) return NotFound("No cards in the store");
+
+            foreach (var c in existingListOfCards)
+                if (fileName == c.FileName)
+                {
+                    existingListOfCards.Remove(c);
+                    break;
+                }
+
+            if (existingListOfCards != null) SaveToFile(existingListOfCards);
+
+            return Ok("Successfully deleted");
         }
 
         private static List<Card>? LoadCards()

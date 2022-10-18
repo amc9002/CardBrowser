@@ -124,5 +124,11 @@ namespace CardBrowser
             CardBrowserApiClient.Put(editedCard);
             LoadCards();
         }
+
+        private void Click_DeleteCard(object sender, RoutedEventArgs e)
+        {
+            CardBrowserApiClient.Delete(path.Text);
+            LoadCards();
+        }
     }
 }

@@ -48,7 +48,7 @@
         <TextBox x:Name="path" Grid.Column="2" HorizontalAlignment="Left" Margin="83,25,0,0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="395" Height="25" FontSize="12"/>
         <TextBox x:Name="fullPathBox" Grid.Column="2" HorizontalAlignment="Left" Margin="83,67,0,0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="395" Height="25" FontSize="12"/>
         <Button x:Name="editButton" Click="Click_SaveNewName" Grid.Column="4" Content="Save new name" HorizontalAlignment="Center" VerticalAlignment="Top" Height="35" Width="130" FontSize="16" RenderTransformOrigin="0.535,0.694" Margin="0,25,0,0"/>
-        <Button x:Name="deleteButton" Grid.Column="4" Content="Delete" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Height="35" Width="130" FontSize="20"/>
+        <Button x:Name="deleteButton" Click="Click_DeleteCard" Grid.Column="4" Content="Delete" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Height="35" Width="130" FontSize="20"/>
         <Button x:Name="browseButton" Click="Click_Browse" Grid.Column="3" Content="Browse" HorizontalAlignment="Center" Grid.Row="5" VerticalAlignment="Top" Height="35" Width="130" FontSize="20" Margin="0,25,0,0"/>
         <Button x:Name="uploadButton" Click="Click_UploadFile" Grid.Column="4" Content="Upload" HorizontalAlignment="Center" Grid.Row="5" Height="35" Width="130" VerticalAlignment="Top" Margin="0,25,0,0" FontSize="20"/>
         <Image x:Name="bigImage" Grid.Column="2" HorizontalAlignment="Left" Height="420" Margin="52,81,0,0" Grid.RowSpan="5" VerticalAlignment="Top" Width="614" Grid.ColumnSpan="2"/>
