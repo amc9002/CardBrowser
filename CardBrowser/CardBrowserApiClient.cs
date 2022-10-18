@@ -74,6 +74,25 @@ namespace CardBrowser
             return true;
         }
 
+        public static bool Put(Card updatedCard)
+        {
+            if (updatedCard == null) return false;
+
+            HttpClient client = new()
+            {
+                BaseAddress = new Uri("https://localhost:7191/")
+            };
+            HttpResponseMessage response = client.PutAsJsonAsync("Card", updatedCard).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                MessageBox.Show("Succesfully updated");
+            }
+            else
+                MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+
+            return true;
+        }
+
         public static BitmapImage ByteArrayToImage(byte[] bitImg)
         {
             var bitmapImage = new BitmapImage();

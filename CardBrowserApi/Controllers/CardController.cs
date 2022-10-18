@@ -46,39 +46,48 @@ namespace CardBrowserApi.Controllers
         [HttpPost]
         public IActionResult Post(Card newCard)
         {
-            if (newCard != null)
+            if (newCard == null) return BadRequest("Card is empty or doesn't exist");
+            if (newCard.Img == null) return BadRequest("No images in card");
+
+            var byteImg = Convert.FromBase64String(newCard.Img);
+            if (!IsValidImage(byteImg)) return BadRequest("Not valid type of file");
+
+            List<Card>? existingListOfCards = LoadCards();
+            var card = new Card
             {
-                if (newCard.Img != null)
-                {
-                    var byteImg = Convert.FromBase64String(newCard.Img);
-                    if (IsValidImage(byteImg))
-                    {
-                        List<Card>? existingListOfCards = LoadCards();
-                        var card = new Card
-                        {
-                            Name = newCard.Name,
-                            FileName = newCard.FileName,
-                        };
-                        using (var imageFile = new FileStream("Data/Img/" + newCard.FileName, FileMode.Create))
-                        {
-                            imageFile.Write(byteImg, 0, byteImg.Length);
-                            imageFile.Flush();
-                        }
-
-                        existingListOfCards?.Add(card);
-                        string updatedJson = JsonConvert.SerializeObject(existingListOfCards);
-
-                        using (StreamWriter writer = new(path, false))
-                        {
-                            writer.Write(updatedJson);
-                        }
-
-                        return Ok(card);
-                    }
-                    else return BadRequest("Not valid type of file");
-                }
+                Name = newCard.Name,
+                FileName = newCard.FileName,
+            };
+            using (var imageFile = new FileStream("Data/Img/" + newCard.FileName, FileMode.Create))
+            {
+                imageFile.Write(byteImg, 0, byteImg.Length);
+                imageFile.Flush();
             }
-            return BadRequest("File is empty or doesn't exist");
+
+            existingListOfCards?.Add(card);
+            if(existingListOfCards != null) SaveToFile(existingListOfCards);
+            
+            return Ok(card);
+        }
+
+        [HttpPut]
+        public IActionResult Put(Card editedCard)
+        {
+            if (editedCard == null) return BadRequest("File is empty or doesn't exist");
+
+            List<Card>? existingListOfCards = LoadCards();
+            if(existingListOfCards == null) return NotFound("No cards in the store");
+
+            foreach(var card in existingListOfCards)           
+                if(card.FileName == editedCard.FileName)
+                {
+                    card.Name = editedCard.Name;
+                    break;
+                }
+           
+            if (existingListOfCards != null) SaveToFile(existingListOfCards);
+
+            return Ok("Successfully updated");
         }
 
         private static List<Card>? LoadCards()
@@ -90,12 +99,24 @@ namespace CardBrowserApi.Controllers
             return cards;
         }
 
+        private IActionResult SaveToFile(List<Card> cards)
+        {
+            
+            string json = JsonConvert.SerializeObject(cards);
+            using (StreamWriter writer = new(path, false))
+            {
+                writer.Write(string.Empty);
+                writer.Write(json);
+            }
+            return Ok("Saved");
+        }
+
         private static bool IsValidImage(byte[] filebytes)
         {
             using (var streamForValidation = new MemoryStream(filebytes))
                 try
                 {
-                    var isValidImage = System.Drawing.Image.FromStream(streamForValidation);
+                    var isValidImage = Image.FromStream(streamForValidation);
                 }
                 catch
                 {

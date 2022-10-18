@@ -41,6 +41,7 @@ namespace CardBrowser
 
         public void LoadCards()
         {
+            listCards.Items.Clear();
             var cards = CardBrowserApiClient.Get();
             foreach (var card in cards)
                 listCards.Items.Add(card);
@@ -71,7 +72,7 @@ namespace CardBrowser
         private void Click_UploadFile(object sender, RoutedEventArgs e)
         {
             while (!cardName.Text.Any(c => char.IsLetter(c))
-                && !string.IsNullOrEmpty(cardName.Text))
+                && string.IsNullOrEmpty(cardName.Text))
             {
                 MessageBox.Show("Enter Name of card, please");
             }
@@ -88,7 +89,6 @@ namespace CardBrowser
             };
             CardBrowserApiClient.Post(newCard);
             LoadCards();
-
         }
 
         private void ListCards_Click(object sender, MouseButtonEventArgs e)
@@ -97,17 +97,32 @@ namespace CardBrowser
             if (item != null)
             {
                 cardName.Text = item.Name;
+                path.Text = item.FileName;
                 if (item.Img == null)
                 {
                     MessageBox.Show("No picture");
                     return;
                 }
-                if (item.Img != null)
-                {
-                    byte[] bitImg = Convert.FromBase64String(item.Img);
-                    bigImage.Source = CardBrowserApiClient.ByteArrayToImage(bitImg);
-                }
+                byte[] bitImg = Convert.FromBase64String(item.Img);
+                bigImage.Source = CardBrowserApiClient.ByteArrayToImage(bitImg);
             }
+        }
+
+        private void Click_SaveNewName(object sender, RoutedEventArgs e)
+        {
+            while (!cardName.Text.Any(c => char.IsLetter(c))
+            && string.IsNullOrEmpty(cardName.Text))
+            {
+                MessageBox.Show("Enter Name of card, please");
+            }
+
+            var editedCard = new Card
+            {
+                Name = cardName.Text,
+                FileName = path.Text,
+            };
+            CardBrowserApiClient.Put(editedCard);
+            LoadCards();
         }
     }
 }
