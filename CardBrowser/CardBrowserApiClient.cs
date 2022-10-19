@@ -52,7 +52,7 @@ namespace CardBrowser
                 }
                 return emptyCards;
             }
-            MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+            MessageBox.Show(response.Content.ReadAsStringAsync().Result, "Error" + response.StatusCode);
             return emptyCards;
         }
 
@@ -71,7 +71,7 @@ namespace CardBrowser
                 MessageBox.Show("Succesfully posted");
             }
             else
-                MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+                MessageBox.Show(response.Content.ReadAsStringAsync().Result, "Error" + response.StatusCode);
 
             return true;
         }
@@ -90,7 +90,7 @@ namespace CardBrowser
                 MessageBox.Show("Succesfully updated");
             }
             else
-                MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+                MessageBox.Show(response.Content.ReadAsStringAsync().Result, "Error" + response.StatusCode);
 
             return true;
         }
@@ -104,6 +104,11 @@ namespace CardBrowser
                 BaseAddress = baseAddress
             };
             HttpResponseMessage response = client.DeleteAsync(pathToApi  + "/" + filename).Result;
+            if (!response.IsSuccessStatusCode)
+            {
+                MessageBox.Show(response.Content.ReadAsStringAsync().Result, "Error" + response.StatusCode);
+                return false;
+            }
 
             return true;
         }
