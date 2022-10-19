@@ -42,10 +42,23 @@ namespace CardBrowser
         public void LoadCards()
         {
             listCards.Items.Clear();
-            var cards = CardBrowserApiClient.Get();
-            foreach (var card in cards)
-                listCards.Items.Add(card);
+            var response = CardBrowserApiClient.Get();
+            if (response.Error != null)
+            {
+                MessageBox.Show(response.Error);
+                return;
+            }
+
+            if (response.Data != null)
+            {
+                var cards = (List<Card>)response.Data;
+                foreach (var card in cards)
+                    listCards.Items.Add(card);
+            }
+            return;
         }
+
+
 
         private void Click_Browse(object sender, RoutedEventArgs e)
         {
@@ -71,10 +84,11 @@ namespace CardBrowser
 
         private void Click_UploadFile(object sender, RoutedEventArgs e)
         {
-            while (!cardName.Text.Any(c => char.IsLetter(c))
+            if (!cardName.Text.Any(c => char.IsLetter(c))
                 && string.IsNullOrEmpty(cardName.Text))
             {
                 MessageBox.Show("Enter Name of card, please");
+                return;
             }
 
             if (path.Text == null) return;
@@ -87,7 +101,13 @@ namespace CardBrowser
                 FileName = Path.GetFileName(path.Text),
                 Img = base64ImageRepresentation
             };
-            CardBrowserApiClient.Post(newCard);
+
+            var response = CardBrowserApiClient.Post(newCard);
+            if (response.Error == null)
+                MessageBox.Show("Succesfully posted");
+
+            else MessageBox.Show(response.Error);
+
             LoadCards();
         }
 
@@ -110,29 +130,71 @@ namespace CardBrowser
 
         private void Click_SaveNewName(object sender, RoutedEventArgs e)
         {
-            while (!cardName.Text.Any(c => char.IsLetter(c))
+            if (!cardName.Text.Any(c => char.IsLetter(c))
             && string.IsNullOrEmpty(cardName.Text))
             {
                 MessageBox.Show("Enter Name of card, please");
+                return;
             }
+            
+            MessageBoxResult permission = MessageBox.Show(
+                "Are you sure?",
+                "Update name",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Warning,
+                MessageBoxResult.Cancel,
+                MessageBoxOptions.DefaultDesktopOnly);
 
+            if (permission == MessageBoxResult.Cancel) return;
+          
             var editedCard = new Card
             {
                 Name = cardName.Text,
                 FileName = path.Text,
             };
-            CardBrowserApiClient.Put(editedCard);
+
+            var response = CardBrowserApiClient.Put(editedCard);
+            if (response.Error == null)
+                MessageBox.Show("Succesfully updated");
+
+            else MessageBox.Show(response.Error);
+
             LoadCards();
         }
 
         private void Click_DeleteCard(object sender, RoutedEventArgs e)
         {
-            CardBrowserApiClient.Delete(path.Text);
-            LoadCards();
+            MessageBoxResult permission = MessageBox.Show(
+                "Are you sure?",
+                "Delete card",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Warning,
+                MessageBoxResult.Cancel,
+                MessageBoxOptions.DefaultDesktopOnly);
+
+            if (permission == MessageBoxResult.Cancel) return;
+
+            var cardToDelete = new Card
+            {
+                FileName = path.Text
+            };
+
+            var response = CardBrowserApiClient.Delete(cardToDelete);
+            if (response.Error != null)
+            {
+                MessageBox.Show(response.Error);
+                return;
+            }
+
+            MessageBox.Show("Succesfully deleted");
+
             cardName.Text = string.Empty;
             path.Text = string.Empty;
             fullPathBox.Text = string.Empty;
             bigImage.Source = null;
+
+            LoadCards();
+
         }
     }
 }

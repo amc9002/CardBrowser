@@ -16,101 +16,142 @@ namespace CardBrowser
 {
     public class CardBrowserApiClient
     {
-        private readonly static Uri baseAddress = new ("https://localhost:7191/");
-        private static readonly string pathToApi = "api/Card";
-        public static List<Card> Get()
-        {
-            HttpClient client = new()
-            {
-                BaseAddress = baseAddress
-            };
-            HttpResponseMessage response = client.GetAsync(pathToApi).Result;
+        private readonly static Uri baseAddress = new("https://localhost:7191/");
 
-            var emptyCards = new List<Card>();
+        private readonly static HttpClient client = new()
+        {
+            BaseAddress = baseAddress
+        };
+
+        private static readonly string pathToApi = "api/Card";
+        public static CardBrowserApiResponse Get()
+        {
+            HttpResponseMessage response;
+            var responseForMainWindow = new CardBrowserApiResponse();
+            try
+            {
+                response = client.GetAsync(pathToApi).Result;
+            }
+
+            catch (Exception e)
+            {
+                responseForMainWindow.Error = $"Error: {e}";
+                return responseForMainWindow;
+            }
+
             if (response.IsSuccessStatusCode)
             {
                 string? json = response.Content.ReadAsStringAsync().Result;
                 if (json == null)
                 {
-                    MessageBox.Show("Card doesn't exist");
-                    return emptyCards;
+                    responseForMainWindow.Error = "List of cards doesn't exist";
+                    return responseForMainWindow;
                 }
 
                 List<Card>? cards = JsonConvert.DeserializeObject<List<Card>>(json);
-                if (cards != null)
+                if (cards == null)
                 {
-                    foreach (var card in cards)
-                    {
-                        if (card.Img == null) continue;
-
-                        byte[] bitImg = Convert.FromBase64String(card.Img);
-                        if (bitImg == null || bitImg.Length == 0) continue;
-
-                        card.BitmapImage = ByteArrayToImage(bitImg);
-                    }
-                    return cards;
+                    responseForMainWindow.Error = "No cards in store";
+                    responseForMainWindow.Data = new List<Card>();
+                    return responseForMainWindow;
                 }
-                return emptyCards;
+
+                foreach (var card in cards)
+                {
+                    if (card.Img == null) continue;
+
+                    byte[] bitImg = Convert.FromBase64String(card.Img);
+                    if (bitImg == null || bitImg.Length == 0) continue;
+
+                    card.BitmapImage = ByteArrayToImage(bitImg);
+                }
+                responseForMainWindow.Data = cards;
+                return responseForMainWindow;
             }
-            MessageBox.Show(response.Content.ReadAsStringAsync().Result, "Error" + response.StatusCode);
-            return emptyCards;
+
+            responseForMainWindow.Error = response.Content.ReadAsStringAsync().Result + ". Error: " + response.StatusCode;
+            return responseForMainWindow;
         }
 
-        public static bool Post(Card newCard)
+        public static CardBrowserApiResponse Post(Card newCard)
         {
-            if (newCard == null) return false;
-
-            HttpClient client = new()
+            var responseForMainWindow = new CardBrowserApiResponse();
+            if (newCard == null)
             {
-                BaseAddress = baseAddress
-            };
-
-            HttpResponseMessage response = client.PostAsJsonAsync(pathToApi, newCard).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                MessageBox.Show("Succesfully posted");
+                responseForMainWindow.Error = "No card chosen";
+                return responseForMainWindow;
             }
-            else
-                MessageBox.Show(response.Content.ReadAsStringAsync().Result, "Error" + response.StatusCode);
 
-            return true;
-        }
-
-        public static bool Put(Card updatedCard)
-        {
-            if (updatedCard == null) return false;
-
-            HttpClient client = new()
+            HttpResponseMessage response;
+            try
             {
-                BaseAddress = baseAddress
-            };
-            HttpResponseMessage response = client.PutAsJsonAsync(pathToApi, updatedCard).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                MessageBox.Show("Succesfully updated");
+                response = client.PostAsJsonAsync(pathToApi, newCard).Result;
             }
-            else
-                MessageBox.Show(response.Content.ReadAsStringAsync().Result, "Error" + response.StatusCode);
 
-            return true;
-        }
-
-        public static bool Delete(string filename)
-        {
-            if (filename == null) return false;
-
-            HttpClient client = new()
+            catch (Exception e)
             {
-                BaseAddress = baseAddress
-            };
-            HttpResponseMessage response = client.DeleteAsync(pathToApi  + "/" + filename).Result;
+                responseForMainWindow.Error = $"Error: {e}";
+                return responseForMainWindow;
+            }
+
             if (!response.IsSuccessStatusCode)
+                responseForMainWindow.Error = response.Content.ReadAsStringAsync().Result + ". Error: " + response.StatusCode;               
+
+            return responseForMainWindow;
+        }
+
+        public static CardBrowserApiResponse Put(Card updatedCard)
+        {
+            var responseForMainWindow = new CardBrowserApiResponse();
+            if (updatedCard == null) 
             {
-                MessageBox.Show(response.Content.ReadAsStringAsync().Result, "Error" + response.StatusCode);
-                return false;
+                responseForMainWindow.Error = "No card chosen";
+                return responseForMainWindow;
             }
 
-            return true;
+            HttpResponseMessage response;
+            try
+            {
+                response = client.PutAsJsonAsync(pathToApi, updatedCard).Result;
+            }
+
+            catch (Exception e)
+            {
+                responseForMainWindow.Error = $"Error: {e}";
+                return responseForMainWindow;
+            }
+
+            if (!response.IsSuccessStatusCode)
+                responseForMainWindow.Error = response.Content.ReadAsStringAsync().Result + ". Error: " + response.StatusCode;
+
+            return responseForMainWindow;
+        }
+
+        public static CardBrowserApiResponse Delete(Card сardToDelete)
+        {
+            var responseForMainWindow = new CardBrowserApiResponse();
+            if (сardToDelete.FileName == null) 
+            {
+                responseForMainWindow.Error = "No card chosen";
+                return responseForMainWindow;
+            }
+
+            HttpResponseMessage response;
+            try
+            {
+                response = client.DeleteAsync(pathToApi + "/" + сardToDelete.FileName).Result;
+            }
+
+            catch (Exception e)
+            {
+                responseForMainWindow.Error = $"Error: {e}";
+                return responseForMainWindow;
+            }
+
+            if (!response.IsSuccessStatusCode)
+                responseForMainWindow.Error = response.Content.ReadAsStringAsync().Result + ". Error: " + response.StatusCode;
+
+            return responseForMainWindow;
         }
 
         public static BitmapImage ByteArrayToImage(byte[] bitImg)
