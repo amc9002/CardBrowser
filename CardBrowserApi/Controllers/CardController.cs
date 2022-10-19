@@ -46,16 +46,16 @@ namespace CardBrowserApi.Controllers
         [HttpPost]
         public IActionResult Post(Card newCard)
         {
-            if (newCard == null) return (IActionResult)BadRequest("Card is empty or doesn't exist");
-            if (newCard.Img == null) return (IActionResult)NotFound("No images in card");
+            if (newCard == null) return BadRequest("Card is empty or doesn't exist");
+            if (newCard.Img == null) return NotFound("No images in card");
 
             var byteImg = Convert.FromBase64String(newCard.Img);
-            if (!IsValidImage(byteImg)) return (IActionResult)BadRequest("Not valid type of file");
+            if (!IsValidImage(byteImg)) return BadRequest("Not valid type of file");
 
             List<Card>? existingListOfCards = LoadCards();
             if (existingListOfCards != null)
                 foreach (var c in existingListOfCards)
-                    if (c.FileName == newCard.FileName) return (IActionResult)BadRequest("The card with the same file name already exists");
+                    if (c.FileName == newCard.FileName) return BadRequest("The card with the same file name already exists");
 
             var card = new Card
             {
@@ -77,10 +77,10 @@ namespace CardBrowserApi.Controllers
         [HttpPut]
         public IActionResult Put(Card card)
         {
-            if (card == null) return (IActionResult)BadRequest("File is empty or doesn't exist");
+            if (card == null) return BadRequest("File is empty or doesn't exist");
 
             List<Card>? existingListOfCards = LoadCards();
-            if (existingListOfCards == null) return (IActionResult)BadRequest("No cards in the store");
+            if (existingListOfCards == null) return BadRequest("No cards in the store");
 
             foreach (var c in existingListOfCards)
                 if (card.FileName == c.FileName)
@@ -98,7 +98,7 @@ namespace CardBrowserApi.Controllers
         public IActionResult Delete(string fileName)
         {
             var existingListOfCards = LoadCards();
-            if (existingListOfCards == null) return (IActionResult)NotFound("No cards in the store");
+            if (existingListOfCards == null) return NotFound("No cards in the store");
 
             bool found = false;
             foreach (var c in existingListOfCards)
@@ -107,12 +107,12 @@ namespace CardBrowserApi.Controllers
                 {
                     existingListOfCards.Remove(c);
                     found = true;
-                    FileInfo file = new FileInfo("Data/Img/" + fileName);
+                    FileInfo file = new ("Data/Img/" + fileName);
                     file.Delete();
                     break;
                 }
             }
-            if (!found) return (IActionResult)NotFound("No file with this file name");
+            if (!found) return NotFound("No file with this file name");
 
 
 
