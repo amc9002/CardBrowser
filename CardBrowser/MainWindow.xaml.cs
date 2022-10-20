@@ -104,8 +104,11 @@ namespace CardBrowser
 
             var response = CardBrowserApiClient.Post(newCard);
             if (response.Error == null)
+            {
                 MessageBox.Show("Succesfully posted");
-
+                fullPathBox.Text = string.Empty;
+            }
+                
             else MessageBox.Show(response.Error);
 
             LoadCards();
@@ -125,6 +128,7 @@ namespace CardBrowser
                 }
                 byte[] bitImg = Convert.FromBase64String(item.Img);
                 bigImage.Source = CardBrowserApiClient.ByteArrayToImage(bitImg);
+                fullPathBox.Text = string.Empty;
             }
         }
 
