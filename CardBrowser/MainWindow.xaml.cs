@@ -27,6 +27,7 @@ using CardBrowser.Models;
 using Path = System.IO.Path;
 using System.Security.Policy;
 using System.Windows.Controls.Primitives;
+using System.Drawing.Printing;
 
 namespace CardBrowser
 {
@@ -39,6 +40,7 @@ namespace CardBrowser
         {
             InitializeComponent();
             LoadCards();
+            deleteButton.IsEnabled = false;
         }
 
         public void LoadCards()
@@ -60,8 +62,6 @@ namespace CardBrowser
             return;
         }
 
-
-
         private void Click_Browse(object sender, RoutedEventArgs e)
         {
             OpenFileDialog browseFiles = new()
@@ -79,18 +79,17 @@ namespace CardBrowser
                 if (bitImg == null || bitImg.Length == 0) return;
 
                 bigImage.Source = CardBrowserApiClient.ByteArrayToImage(bitImg);
-                cardName.Text = string.Empty;            
+                cardName.Text = string.Empty;
+
+                uploadButton.IsEnabled = true;
+                deleteButton.IsEnabled = false;
+
+                return;
             }
         }
 
         private void Click_UploadFile(object sender, RoutedEventArgs e)
         {
-            if (fullPath.Text == String.Empty)
-            {
-                MessageBox.Show("No new card has been selected");
-                return;
-            }
-            
             if (!cardName.Text.Any(c => char.IsLetter(c))
                 && string.IsNullOrEmpty(cardName.Text))
             {
@@ -106,12 +105,7 @@ namespace CardBrowser
                 MessageBoxResult.Cancel,
                 MessageBoxOptions.DefaultDesktopOnly);
 
-            if (permission == MessageBoxResult.Cancel)
-            {
-                return;
-            }
-
-            
+            if (permission == MessageBoxResult.Cancel) return;
 
             byte[] fileBody = File.ReadAllBytes(fullPath.Text);
             string base64ImageRepresentation = Convert.ToBase64String(fileBody);
@@ -131,12 +125,16 @@ namespace CardBrowser
 
             else MessageBox.Show(response.Error);
 
+            uploadButton.IsEnabled = false;
             LoadCards();
         }
 
         private void ListCards_Click(object sender, MouseButtonEventArgs e)
         {
-            if(fullPath.Text != string.Empty)
+            deleteButton.IsEnabled = true;
+            uploadButton.IsEnabled = false;
+
+            if (fullPath.Text != string.Empty)
             {
                 MessageBoxResult permission = MessageBox.Show(
                "File hasn't been uploaded?",

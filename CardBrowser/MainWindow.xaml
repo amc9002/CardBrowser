@@ -25,7 +25,7 @@
             <ColumnDefinition Width="196*"/>
         </Grid.ColumnDefinitions>
 
-        <ListView x:Name="listCards" Grid.RowSpan="6" Margin="10,10,10,42" TextElement.FontSize="16" Grid.ColumnSpan="2" PreviewMouseLeftButtonUp="ListCards_Click">
+        <ListView x:Name="listCards" Grid.RowSpan="6" Margin="10,10,10,42" TextElement.FontSize="11" Grid.ColumnSpan="2" PreviewMouseLeftButtonUp="ListCards_Click">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Picture" Width="100">
@@ -45,12 +45,12 @@
         <Label x:Name="pathLabel" Grid.Column="2" Content="Full Path" HorizontalAlignment="Left" Margin="23,59,0,0" Grid.Row="5" VerticalAlignment="Top" Height="26" Width="52" RenderTransformOrigin="0.534,0.6"/>
         <Label x:Name="nameLabel" Grid.Column="2" Content="Name" HorizontalAlignment="Left" Margin="76,18,0,0" VerticalAlignment="Top" Height="42" Width="75" FontSize="20"/>
         <TextBox x:Name="cardName" Grid.Column="2" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="382" Height="47" FontSize="20" Margin="172,15,0,0" Grid.ColumnSpan="2"/>
-        <TextBlock x:Name="path" Grid.Column="2" HorizontalAlignment="Left" Margin="83,30,0,0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="395" Height="18" FontSize="12"/>
-        <TextBlock x:Name="fullPath" Grid.Column="2" HorizontalAlignment="Left" Margin="83,62,0,0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="395" Height="35" FontSize="12"/>
-        <Button x:Name="editButton" Click="Click_SaveNewName" Grid.Column="4" Content="Save new name" HorizontalAlignment="Center" VerticalAlignment="Top" Height="35" Width="130" FontSize="16" RenderTransformOrigin="0.535,0.694" Margin="0,25,0,0"/>
+        <TextBox x:Name="path" Grid.Column="2" HorizontalAlignment="Left" Margin="83,25,0,0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="395" Height="26" FontSize="12"/>
+        <TextBlock x:Name="fullPath" Grid.Column="2" HorizontalAlignment="Left" Margin="83,62,0,0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="395" Height="38" FontSize="12"/>
+        <Button x:Name="editButton" Click="Click_SaveNewName" Grid.Column="4" Content="Save new name" HorizontalAlignment="Center" VerticalAlignment="Top" Height="35" Width="130" FontSize="14" RenderTransformOrigin="0.535,0.694" Margin="0,25,0,0"/>
         <Button x:Name="deleteButton" Click="Click_DeleteCard" Grid.Column="4" Content="Delete" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Height="35" Width="130" FontSize="20"/>
-        <Button x:Name="browseButton" Click="Click_Browse" Grid.Column="3" Content="Browse" HorizontalAlignment="Center" Grid.Row="5" VerticalAlignment="Top" Height="35" Width="130" FontSize="20" Margin="0,25,0,0"/>
-        <Button x:Name="uploadButton" Click="Click_UploadFile" Grid.Column="4" Content="Upload" HorizontalAlignment="Center" Grid.Row="5" Height="35" Width="130" VerticalAlignment="Top" Margin="0,25,0,0" FontSize="20"/>
+        <Button x:Name="browseButton" Click="Click_Browse" Grid.Column="3" Content="Add card" HorizontalAlignment="Center" Grid.Row="5" VerticalAlignment="Top" Height="35" Width="130" FontSize="20" Margin="0,25,0,0"/>
+        <Button x:Name="uploadButton" Click="Click_UploadFile" Grid.Column="4" Content="Upload" HorizontalAlignment="Center" Grid.Row="5" Height="35" Width="130" VerticalAlignment="Top" Margin="0,25,0,0" FontSize="20" IsEnabled="false"/>
         <Image x:Name="bigImage" Grid.Column="2" HorizontalAlignment="Left" Height="420" Margin="52,81,0,0" Grid.RowSpan="5" VerticalAlignment="Top" Width="614" Grid.ColumnSpan="2"/>
 
     </Grid>
