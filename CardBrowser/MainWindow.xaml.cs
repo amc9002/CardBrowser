@@ -77,13 +77,42 @@ namespace CardBrowser
                 if (bitImg == null || bitImg.Length == 0) return;
 
                 bigImage.Source = CardBrowserApiClient.ByteArrayToImage(bitImg);
-                cardName.Text = "";
+                cardName.Text = string.Empty;
+
+                //MessageBoxResult permission = MessageBox.Show(
+                //"Are you sure?",
+                //"Cancel",
+                //MessageBoxButton.OKCancel,
+                //MessageBoxImage.Warning,
+                //MessageBoxResult.Cancel,
+                //MessageBoxOptions.DefaultDesktopOnly);
+
+                //if (permission == MessageBoxResult.Cancel)
+                //{
+                //    ClearAllFields();
+                //    return;
+                //}
+
                 MessageBox.Show("Enter Name of card, please");
             }
         }
 
         private void Click_UploadFile(object sender, RoutedEventArgs e)
         {
+            MessageBoxResult permission = MessageBox.Show(
+                "Are you sure?",
+                "Cancel",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Warning,
+                MessageBoxResult.Cancel,
+                MessageBoxOptions.DefaultDesktopOnly);
+
+            if (permission == MessageBoxResult.Cancel)
+            {
+                ClearAllFields();
+                return;
+            }
+
             if (!cardName.Text.Any(c => char.IsLetter(c))
                 && string.IsNullOrEmpty(cardName.Text))
             {
@@ -108,7 +137,7 @@ namespace CardBrowser
                 MessageBox.Show("Succesfully posted");
                 fullPathBox.Text = string.Empty;
             }
-                
+
             else MessageBox.Show(response.Error);
 
             LoadCards();
@@ -134,13 +163,15 @@ namespace CardBrowser
 
         private void Click_SaveNewName(object sender, RoutedEventArgs e)
         {
+            string existingName = cardName.Text;
+
             if (!cardName.Text.Any(c => char.IsLetter(c))
             && string.IsNullOrEmpty(cardName.Text))
             {
                 MessageBox.Show("Enter Name of card, please");
                 return;
             }
-            
+
             MessageBoxResult permission = MessageBox.Show(
                 "Are you sure?",
                 "Update name",
@@ -149,8 +180,12 @@ namespace CardBrowser
                 MessageBoxResult.Cancel,
                 MessageBoxOptions.DefaultDesktopOnly);
 
-            if (permission == MessageBoxResult.Cancel) return;
-          
+            if (permission == MessageBoxResult.Cancel)
+            {
+                cardName.Text = existingName;
+                return;
+            }
+
             var editedCard = new Card
             {
                 Name = cardName.Text,
@@ -192,13 +227,18 @@ namespace CardBrowser
 
             MessageBox.Show("Succesfully deleted");
 
+            ClearAllFields();
+
+            LoadCards();
+
+        }
+
+        private void ClearAllFields()
+        {
             cardName.Text = string.Empty;
             path.Text = string.Empty;
             fullPathBox.Text = string.Empty;
             bigImage.Source = null;
-
-            LoadCards();
-
         }
     }
 }
