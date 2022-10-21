@@ -25,6 +25,8 @@ using System.Diagnostics.Eventing.Reader;
 using Microsoft.Win32;
 using CardBrowser.Models;
 using Path = System.IO.Path;
+using System.Security.Policy;
+using System.Windows.Controls.Primitives;
 
 namespace CardBrowser
 {
@@ -69,36 +71,33 @@ namespace CardBrowser
 
             if (browseFiles.ShowDialog() == true)
             {
-                string fullPath = browseFiles.FileName;
-                fullPathBox.Text = fullPath;
-                path.Text = Path.GetFileName(fullPath);
-                byte[] bitImg = File.ReadAllBytes(fullPath);
+                string fullPathFromBrowser = browseFiles.FileName;
+                fullPath.Text = fullPathFromBrowser;
+                path.Text = Path.GetFileName(fullPathFromBrowser);
+                byte[] bitImg = File.ReadAllBytes(fullPathFromBrowser);
 
                 if (bitImg == null || bitImg.Length == 0) return;
 
                 bigImage.Source = CardBrowserApiClient.ByteArrayToImage(bitImg);
-                cardName.Text = string.Empty;
-
-                //MessageBoxResult permission = MessageBox.Show(
-                //"Are you sure?",
-                //"Cancel",
-                //MessageBoxButton.OKCancel,
-                //MessageBoxImage.Warning,
-                //MessageBoxResult.Cancel,
-                //MessageBoxOptions.DefaultDesktopOnly);
-
-                //if (permission == MessageBoxResult.Cancel)
-                //{
-                //    ClearAllFields();
-                //    return;
-                //}
-
-                MessageBox.Show("Enter Name of card, please");
+                cardName.Text = string.Empty;            
             }
         }
 
         private void Click_UploadFile(object sender, RoutedEventArgs e)
         {
+            if (fullPath.Text == String.Empty)
+            {
+                MessageBox.Show("No new card has been selected");
+                return;
+            }
+            
+            if (!cardName.Text.Any(c => char.IsLetter(c))
+                && string.IsNullOrEmpty(cardName.Text))
+            {
+                MessageBox.Show("Enter Name of card, please");
+                return;
+            }
+
             MessageBoxResult permission = MessageBox.Show(
                 "Are you sure?",
                 "Cancel",
@@ -109,20 +108,12 @@ namespace CardBrowser
 
             if (permission == MessageBoxResult.Cancel)
             {
-                ClearAllFields();
                 return;
             }
 
-            if (!cardName.Text.Any(c => char.IsLetter(c))
-                && string.IsNullOrEmpty(cardName.Text))
-            {
-                MessageBox.Show("Enter Name of card, please");
-                return;
-            }
+            
 
-            if (path.Text == null) return;
-
-            byte[] fileBody = File.ReadAllBytes(fullPathBox.Text);
+            byte[] fileBody = File.ReadAllBytes(fullPath.Text);
             string base64ImageRepresentation = Convert.ToBase64String(fileBody);
             var newCard = new Card
             {
@@ -135,7 +126,7 @@ namespace CardBrowser
             if (response.Error == null)
             {
                 MessageBox.Show("Succesfully posted");
-                fullPathBox.Text = string.Empty;
+                fullPath.Text = string.Empty;
             }
 
             else MessageBox.Show(response.Error);
@@ -145,6 +136,22 @@ namespace CardBrowser
 
         private void ListCards_Click(object sender, MouseButtonEventArgs e)
         {
+            if(fullPath.Text != string.Empty)
+            {
+                MessageBoxResult permission = MessageBox.Show(
+               "File hasn't been uploaded?",
+               "Cancel",
+               MessageBoxButton.OKCancel,
+               MessageBoxImage.Warning,
+               MessageBoxResult.Cancel,
+               MessageBoxOptions.DefaultDesktopOnly);
+
+                if (permission == MessageBoxResult.Cancel)
+                {
+                    return;
+                }
+            }
+
             var item = (Card)((ListView)sender).SelectedItem;
             if (item != null)
             {
@@ -157,7 +164,7 @@ namespace CardBrowser
                 }
                 byte[] bitImg = Convert.FromBase64String(item.Img);
                 bigImage.Source = CardBrowserApiClient.ByteArrayToImage(bitImg);
-                fullPathBox.Text = string.Empty;
+                fullPath.Text = string.Empty;
             }
         }
 
@@ -227,18 +234,13 @@ namespace CardBrowser
 
             MessageBox.Show("Succesfully deleted");
 
-            ClearAllFields();
+            cardName.Text = string.Empty;
+            path.Text = string.Empty;
+            fullPath.Text = string.Empty;
+            bigImage.Source = null;
 
             LoadCards();
 
-        }
-
-        private void ClearAllFields()
-        {
-            cardName.Text = string.Empty;
-            path.Text = string.Empty;
-            fullPathBox.Text = string.Empty;
-            bigImage.Source = null;
         }
     }
 }
