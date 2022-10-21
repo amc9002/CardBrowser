@@ -40,7 +40,6 @@ namespace CardBrowser
         {
             InitializeComponent();
             LoadCards();
-            deleteButton.IsEnabled = false;
         }
 
         public void LoadCards()
