@@ -58,11 +58,15 @@ namespace CardBrowser
                 foreach (var card in cards)
                     listCards.Items.Add(card);
             }
+
+            cardName.IsReadOnly = true;
+
             return;
         }
 
         private void Click_Browse(object sender, RoutedEventArgs e)
         {
+            cardName.IsReadOnly = true;
             OpenFileDialog browseFiles = new()
             {
                 Filter = "Image files (*.png;*.jpg)|*.png;*.jpg|All files (*.*)|*.*"
@@ -89,12 +93,16 @@ namespace CardBrowser
 
         private void Click_UploadFile(object sender, RoutedEventArgs e)
         {
+            cardName.IsReadOnly = false;
+
             if (!cardName.Text.Any(c => char.IsLetter(c))
                 && string.IsNullOrEmpty(cardName.Text))
             {
                 MessageBox.Show("Enter Name of card, please");
                 return;
             }
+
+            cardName.IsReadOnly = true;
 
             MessageBoxResult permission = MessageBox.Show(
                 "Are you sure?",
@@ -167,6 +175,8 @@ namespace CardBrowser
 
         private void Click_SaveNewName(object sender, RoutedEventArgs e)
         {
+            cardName.IsReadOnly = false;
+
             string existingName = cardName.Text;
 
             if (!cardName.Text.Any(c => char.IsLetter(c))
@@ -175,6 +185,8 @@ namespace CardBrowser
                 MessageBox.Show("Enter Name of card, please");
                 return;
             }
+
+            cardName.IsReadOnly = true;
 
             MessageBoxResult permission = MessageBox.Show(
                 "Are you sure?",

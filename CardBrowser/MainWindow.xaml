@@ -25,17 +25,17 @@
             <ColumnDefinition Width="196*"/>
         </Grid.ColumnDefinitions>
 
-        <ListView x:Name="listCards" Grid.RowSpan="6" Margin="10,10,10,42" TextElement.FontSize="11" Grid.ColumnSpan="2" PreviewMouseLeftButtonUp="ListCards_Click">
+        <ListView x:Name="listCards" Grid.RowSpan="6" Margin="10,10,10,42" TextElement.FontSize="11" Grid.ColumnSpan="2" FontSize="14" PreviewMouseLeftButtonUp="ListCards_Click">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Picture" Width="100">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Width="120" Source="{Binding BitmapImage}"/>
+                                <Image Width="120" Source="{Binding BitmapImage}" Stretch="UniformToFill"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Name" Width="380"  DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Name" Width="380"  DisplayMemberBinding="{Binding Name}"/>
                 </GridView>
             </ListView.View>
         </ListView>
