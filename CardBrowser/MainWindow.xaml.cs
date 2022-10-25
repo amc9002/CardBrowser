@@ -36,6 +36,8 @@ namespace CardBrowser
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        string lastName = string.Empty;
         public MainWindow()
         {
             InitializeComponent();
@@ -59,6 +61,10 @@ namespace CardBrowser
                     listCards.Items.Add(card);
             }
 
+            changeNameButton.IsEnabled = false;
+            saveNameButton.IsEnabled = false;
+            uploadButton.IsEnabled = false;
+            deleteButton.IsEnabled = false;
             cardName.IsReadOnly = true;
 
             return;
@@ -67,6 +73,7 @@ namespace CardBrowser
         private void Click_Browse(object sender, RoutedEventArgs e)
         {
             cardName.IsReadOnly = true;
+
             OpenFileDialog browseFiles = new()
             {
                 Filter = "Image files (*.png;*.jpg)|*.png;*.jpg|All files (*.*)|*.*"
@@ -84,6 +91,8 @@ namespace CardBrowser
                 bigImage.Source = CardBrowserApiClient.ByteArrayToImage(bitImg);
                 cardName.Text = string.Empty;
 
+                changeNameButton.IsEnabled = false;
+                saveNameButton.IsEnabled = false;
                 uploadButton.IsEnabled = true;
                 deleteButton.IsEnabled = false;
 
@@ -93,10 +102,16 @@ namespace CardBrowser
 
         private void Click_UploadFile(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(fullPath.Text))
+            {
+                MessageBox.Show("No file has been selected");
+                return;
+            }
+
             cardName.IsReadOnly = false;
 
             if (!cardName.Text.Any(c => char.IsLetter(c))
-                && string.IsNullOrEmpty(cardName.Text))
+                || string.IsNullOrEmpty(cardName.Text))
             {
                 MessageBox.Show("Enter Name of card, please");
                 return;
@@ -132,16 +147,12 @@ namespace CardBrowser
 
             else MessageBox.Show(response.Error);
 
-            uploadButton.IsEnabled = false;
             LoadCards();
         }
 
         private void ListCards_Click(object sender, MouseButtonEventArgs e)
         {
-            deleteButton.IsEnabled = true;
-            uploadButton.IsEnabled = false;
-
-            if (fullPath.Text != string.Empty)
+            if (!string.IsNullOrEmpty(fullPath.Text))
             {
                 MessageBoxResult permission = MessageBox.Show(
                "File hasn't been uploaded?",
@@ -151,10 +162,7 @@ namespace CardBrowser
                MessageBoxResult.Cancel,
                MessageBoxOptions.DefaultDesktopOnly);
 
-                if (permission == MessageBoxResult.Cancel)
-                {
-                    return;
-                }
+                if (permission == MessageBoxResult.Cancel) return;
             }
 
             var item = (Card)((ListView)sender).SelectedItem;
@@ -162,27 +170,42 @@ namespace CardBrowser
             {
                 cardName.Text = item.Name;
                 path.Text = item.FileName;
+
                 if (item.Img == null)
                 {
                     MessageBox.Show("No picture");
                     return;
                 }
+
                 byte[] bitImg = Convert.FromBase64String(item.Img);
                 bigImage.Source = CardBrowserApiClient.ByteArrayToImage(bitImg);
                 fullPath.Text = string.Empty;
             }
+
+            changeNameButton.IsEnabled = true;
+            saveNameButton.IsEnabled = false;
+            deleteButton.IsEnabled = true;
+            uploadButton.IsEnabled = false;
+            cardName.IsReadOnly = true;
+
         }
 
-        private void Click_SaveNewName(object sender, RoutedEventArgs e)
+        private void Click_ChangeName(object sender, RoutedEventArgs e)
         {
+            if (lastName == string.Empty)
+                lastName = cardName.Text;
+
+            changeNameButton.IsEnabled = false;
+            saveNameButton.IsEnabled = true;
             cardName.IsReadOnly = false;
+        }
 
-            string existingName = cardName.Text;
-
+        private void Click_SaveName(object sender, RoutedEventArgs e)
+        {
             if (!cardName.Text.Any(c => char.IsLetter(c))
-            && string.IsNullOrEmpty(cardName.Text))
+                        && string.IsNullOrEmpty(cardName.Text))
             {
-                MessageBox.Show("Enter Name of card, please");
+                MessageBox.Show("Enter Name of card, please"); ;
                 return;
             }
 
@@ -198,9 +221,17 @@ namespace CardBrowser
 
             if (permission == MessageBoxResult.Cancel)
             {
-                cardName.Text = existingName;
+                cardName.Text = lastName;
+                lastName = string.Empty;
+                cardName.IsReadOnly = true;
+                saveNameButton.IsEnabled = false;
+                changeNameButton.IsEnabled = true;
+
                 return;
             }
+
+            lastName = string.Empty;
+
 
             var editedCard = new Card
             {
@@ -247,9 +278,13 @@ namespace CardBrowser
             path.Text = string.Empty;
             fullPath.Text = string.Empty;
             bigImage.Source = null;
+            changeNameButton.IsEnabled = false;
+            deleteButton.IsEnabled = false;
 
             LoadCards();
 
         }
+
+
     }
 }
