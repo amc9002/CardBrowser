@@ -47,7 +47,6 @@ namespace CardBrowser
 
         public void LoadCards()
         {
-            listCards.Items.Clear();
             var response = CardBrowserApiClient.Get();
             if (response.Error != null)
             {
@@ -57,6 +56,7 @@ namespace CardBrowser
 
             if (response.Data != null)
             {
+                listCards.Items.Clear();
                 var cards = (List<Card>)response.Data;
                 foreach (var card in cards)
                     listCards.Items.Add(card);
@@ -286,6 +286,23 @@ namespace CardBrowser
 
         }
 
+        private void Click_Sort(object sender, RoutedEventArgs e)
+        {
+            var response = CardBrowserApiClient.Get();
+            if (response.Error != null)
+            {
+                MessageBox.Show(response.Error);
+                return;
+            }
 
+            if (response.Data != null)
+            {
+                listCards.Items.Clear();
+                var cards = (List<Card>)response.Data;
+                var orderedCards = cards.OrderBy(x => x.Name);
+                foreach (var card in orderedCards)
+                    listCards.Items.Add(card);
+            }
+        }
     }
 }

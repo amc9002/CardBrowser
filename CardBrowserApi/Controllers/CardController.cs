@@ -114,8 +114,6 @@ namespace CardBrowserApi.Controllers
             }
             if (!found) return NotFound("No file with this file name");
 
-
-
             SaveToFile(existingListOfCards);
 
             return Ok("Successfully deleted");
