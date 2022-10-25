@@ -11,12 +11,14 @@ using CardBrowser.Models;
 using System.IO;
 using System.Windows.Media.Imaging;
 using System.Net.Http.Json;
+using System.Configuration;
+using System.Collections.Specialized;
 
 namespace CardBrowser
 {
     public class CardBrowserApiClient
     {
-        private readonly static Uri baseAddress = new("https://localhost:7191/");
+        private readonly static Uri baseAddress = new( ConfigurationManager.AppSettings.Get("CardBrowserApiUrl"));
 
         private readonly static HttpClient client = new()
         {

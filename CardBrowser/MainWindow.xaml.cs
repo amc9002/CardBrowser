@@ -29,6 +29,7 @@ using System.Security.Policy;
 using System.Windows.Controls.Primitives;
 using System.Drawing.Printing;
 
+
 namespace CardBrowser
 {
     /// <summary>
